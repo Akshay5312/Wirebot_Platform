@@ -7,7 +7,7 @@
 using namespace std;
 
 BLA::Matrix<3> circleTraj(BLA::Matrix<1> t){
-    return {sin(3*t(0)), cos(3*t(0)), 5};
+    return {sin(3*t(0)), 2*cos(3*t(0)), 3*sin(t(0)) + 5};
 }
 
 int main(){
