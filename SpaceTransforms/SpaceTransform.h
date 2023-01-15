@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "../BasicLinearAlgebra/BasicLinearAlgebra.h"
+#include "../OPT/GD.h"
 namespace LLAMA{
     template<int inDOF, int outDOF, class inType = BLA::Matrix<inDOF>, class outType = BLA::Matrix<outDOF>>
     class SpaceTransformation : public BLA::VVF<outDOF, inDOF>{
@@ -33,6 +34,8 @@ namespace LLAMA{
             virtual inType IT(outType y, outType best_guess, int maxSteps){
                 _inverter->setTarget(y);
                 _inverter->gd()->setInit(best_guess);
+                _inverter->gd()->setStepSize(0.2);
+                
 
                 return _inverter->gd()->stepAmount(maxSteps);
             }

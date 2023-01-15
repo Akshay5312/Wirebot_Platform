@@ -1,6 +1,6 @@
 #pragma once
 #include "../BasicLinearAlgebra/BasicLinearAlgebra.h"
-
+#include "../LISTS/ALists.h"
 namespace LLAMA{
     namespace OPT{
 
@@ -138,6 +138,8 @@ namespace LLAMA{
                     //no ability to add with indeces yet -- sorry
                     fn.append(f_n);
                 }
+
+                void setStepSize(float h){_stepSize = h;}
 
                 //the gradient of the objective 
                 BLA::Matrix<inputs> Gradient(BLA::Matrix<inputs> _x){
