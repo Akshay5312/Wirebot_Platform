@@ -6,7 +6,7 @@
 namespace LLAMA{
     namespace SpaceTransformations{
     /**
-     * @brief transformation from joint space to configuration space
+     * @brief transformation from joint space to task space
      * 
      * @tparam inDOF 
      * @tparam outDOF 

@@ -4,15 +4,31 @@
 namespace LLAMA{
     namespace OPT{
 
+        /**
+         * @brief An inequality constraint
+         * 
+         */
         class Constraint{
             protected:
                 BLA::VVF<1,1>* _fn;
             public:
             
+            /**
+             * @brief Construct a new Constraint from a function. right now only R1 -> R1 functions can be used
+             * 
+             * @param fn 
+             */
             Constraint(BLA::VVF<1,1>* fn){_fn = fn;}
             
             Constraint(){}
             
+            /**
+             * @brief if f(x) <= 0, the constrant is satisfied
+             * 
+             * @param x 
+             * @return true 
+             * @return false 
+             */
             virtual bool violates(float &x){
                 if(_fn == nullptr){return false;}
                 BLA::Matrix<1,1> fn_a = (*_fn).vv_f({x});
@@ -21,6 +37,10 @@ namespace LLAMA{
             };
         };
 
+        /**
+         * @brief signifies that there is no constraint, the current (not great) way of doing constraints is to add one per input variable, and that needs to be improved
+         * 
+         */
         class EmptyConstraint : public Constraint{
             private:
             public:
@@ -29,6 +49,10 @@ namespace LLAMA{
                 bool violates(float &x){return false;}
         };
 
+        /**
+         * @brief a linear constraint (is (aX - b) <= 0)
+         * 
+         */
         class LinearConstraint : public BLA::VVF<1,1>, public Constraint{
             float _offset = 0;
             float _scale = 1;
@@ -44,6 +68,10 @@ namespace LLAMA{
                 }
         };
 
+        /**
+         * @brief a ranged constraint (is (min <= x <= max))
+         * 
+         */
         class RangedConstraint : public Constraint{
         protected:
             float _range = 0;
@@ -78,6 +106,10 @@ namespace LLAMA{
 
         };
         
+        /**
+         * @brief a wrapped constraint. This will change x to move it in bounds if it violates the ranged constraint by a small enough amount. Used for rotations or harmonic variables. 
+         * 
+         */
         class WrappedConstraint : public RangedConstraint{
 
                 LinearConstraint _twicelower;
@@ -237,6 +269,13 @@ namespace LLAMA{
                 }
         };
 
+        /**
+         * @brief A solver that uses Gradient descent to minimize e(x)' * Q * e(x), where e is the target - f(x)
+         * 
+         * @tparam outDOF 
+         * @tparam inDOF 
+         * @tparam function_class -- this is a vector valued function f(x)
+         */
         template<int outDOF, int inDOF, class function_class>
         class Solver : public BLA::VVF<1, inDOF>{
                 function_class* _fX;
